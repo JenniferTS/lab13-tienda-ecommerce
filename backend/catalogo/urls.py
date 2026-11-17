@@ -1,7 +1,7 @@
 from django.urls import path
 from rest_framework.routers import DefaultRouter
 
-from .views import CategoriaViewSet, ProductoViewSet
+from .views import CategoriaViewSet, ProductoViewSet, recomendaciones_para_carrito
 from .views_pedidos import PedidoViewSet
 from .views_promociones import configuracion, validar_cupon
 from .views_inventario import InventarioViewSet, LoginView
@@ -16,4 +16,5 @@ urlpatterns = [
     path('auth/login/', LoginView.as_view()),
     path('configuracion/', configuracion),
     path('cupones/validar/', validar_cupon),
+    path('recomendaciones/', recomendaciones_para_carrito),
 ] + router.urls

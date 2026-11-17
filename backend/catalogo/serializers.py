@@ -26,6 +26,14 @@ class ProductoSerializer(serializers.ModelSerializer):
         ]
 
 
+class RecomendacionSerializer(ProductoSerializer):
+    """Producto recomendado con el motivo por el que se recomienda."""
+    motivo = serializers.CharField(read_only=True, default='')
+
+    class Meta(ProductoSerializer.Meta):
+        fields = ProductoSerializer.Meta.fields + ['motivo']
+
+
 class InventarioSerializer(serializers.ModelSerializer):
     """Vista del producto para el panel de inventario. Solo se puede editar el stock mínimo."""
     categoria_nombre = serializers.CharField(source='categoria.nombre', read_only=True)

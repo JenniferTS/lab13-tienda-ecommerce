@@ -88,3 +88,13 @@ export function crearPedido(datos) {
 export function obtenerPedidos(token) {
   return pedir('/pedidos/', { token })
 }
+
+// ---- Recomendaciones
+// Productos que le pueden interesar a quien ve o lleva los productos con esos ids
+export function obtenerRecomendaciones(ids, limite = 4) {
+  return pedir(`/recomendaciones/?productos=${ids.join(',')}&limite=${limite}`)
+}
+
+export function obtenerMasVendidos(limite = 4) {
+  return pedir(`/productos/mas_vendidos/?limite=${limite}`)
+}

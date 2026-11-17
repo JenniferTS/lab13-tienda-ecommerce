@@ -6,6 +6,7 @@ import CarritoSheet from '@/components/carrito/CarritoSheet'
 import Footer from '@/components/Footer'
 import Header from '@/components/Header'
 import Hero from '@/components/Hero'
+import MasVendidos from '@/components/MasVendidos'
 import Ofertas from '@/components/Ofertas'
 import ProductDetail from '@/components/ProductDetail'
 import CarritoProvider from '@/context/CarritoProvider'
@@ -68,12 +69,13 @@ function Tienda() {
               maximoDescuento={maximoDescuento}
             />
             <Ofertas ofertas={ofertas} cupones={configuracion?.cupones ?? []} onVer={setProductoAbierto} />
+            <MasVendidos onVer={setProductoAbierto} />
             <Catalogo busqueda={busqueda} onBuscar={setBusqueda} onVer={setProductoAbierto} />
           </>
         )}
       </main>
       <Footer nombreTienda={NOMBRE_TIENDA} />
-      <ProductDetail producto={productoAbierto} onCerrar={() => setProductoAbierto(null)} />
+      <ProductDetail producto={productoAbierto} onCerrar={() => setProductoAbierto(null)} onVer={setProductoAbierto} />
       <CarritoSheet configuracion={configuracion} />
       <Aviso />
     </div>

@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import CuponCarrito from '@/components/carrito/CuponCarrito'
 import FormularioPedido from '@/components/carrito/FormularioPedido'
 import ItemCarrito from '@/components/carrito/ItemCarrito'
+import Recomendaciones from '@/components/Recomendaciones'
 import { Button } from '@/components/ui/button'
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from '@/components/ui/sheet'
 import { useCarrito } from '@/context/CarritoContext'
@@ -132,6 +133,12 @@ function CarritoSheet({ configuracion }) {
                   <ItemCarrito key={item.producto.id} item={item} />
                 ))}
               </ul>
+              <Recomendaciones
+                ids={items.map((i) => i.producto.id)}
+                titulo="Completa tu compra"
+                limite={3}
+                className="border-t py-4 [&>div]:grid-cols-1"
+              />
             </div>
 
             <div className="space-y-3 border-t bg-card p-4">

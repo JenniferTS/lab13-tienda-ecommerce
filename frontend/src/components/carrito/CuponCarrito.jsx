@@ -47,7 +47,7 @@ function CuponCarrito({ subtotal, cupon, onAplicar, onQuitar, error, onError }) 
           onChange={(e) => setCodigo(e.target.value.toUpperCase())}
           placeholder="¿Tienes un cupón?"
           aria-label="Código de cupón"
-          className="h-9 uppercase tracking-wider"
+          className="h-9 uppercase tracking-wider placeholder:normal-case placeholder:tracking-normal"
         />
         <Button type="submit" variant="secondary" disabled={validando || !codigo.trim()}>
           Aplicar

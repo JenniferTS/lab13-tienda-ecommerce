@@ -2,6 +2,7 @@ import { Minus, Plus, ShoppingCart } from 'lucide-react'
 import { useState } from 'react'
 
 import { Badge } from '@/components/ui/badge'
+import Recomendaciones from '@/components/Recomendaciones'
 import { Button } from '@/components/ui/button'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import Precio from '@/components/Precio'
@@ -9,7 +10,7 @@ import { useCarrito } from '@/context/CarritoContext'
 import { soles } from '@/lib/format'
 
 // Ventana con el detalle del producto. `producto` es null cuando está cerrada.
-function ProductDetail({ producto, onCerrar }) {
+function ProductDetail({ producto, onCerrar, onVer }) {
   const { agregar } = useCarrito()
   const [cantidad, setCantidad] = useState(1)
   const [productoAnterior, setProductoAnterior] = useState(producto)
@@ -87,6 +88,12 @@ function ProductDetail({ producto, onCerrar }) {
                 </div>
               )}
             </div>
+            <Recomendaciones
+              ids={[producto.id]}
+              titulo="También te puede interesar"
+              onVer={onVer}
+              className="border-t pt-4 sm:col-span-2"
+            />
           </div>
         )}
       </DialogContent>
