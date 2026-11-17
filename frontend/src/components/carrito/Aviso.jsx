@@ -4,8 +4,9 @@ import { useCarrito } from '@/context/CarritoContext'
 
 // Mensaje breve que aparece abajo cuando se agrega un producto al carrito
 function Aviso() {
-  const { aviso } = useCarrito()
-  if (!aviso) return null
+  const { aviso, abierto } = useCarrito()
+  // Con el carrito abierto, el producto agregado ya se ve en la lista: solo se muestran los errores
+  if (!aviso || (abierto && aviso.tipo === 'ok')) return null
   const Icono = aviso.tipo === 'error' ? AlertCircle : CheckCircle2
 
   return (

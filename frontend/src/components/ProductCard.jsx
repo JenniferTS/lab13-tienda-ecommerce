@@ -13,7 +13,7 @@ function ProductCard({ producto, onVer }) {
   const agotado = cantidad === 0
 
   return (
-    <Card className="group h-full gap-3 pt-0 rounded-2xl bg-card shadow-sm ring-border transition duration-300 hover:-translate-y-1 hover:shadow-xl">
+    <Card className="group h-full gap-2 pt-0 sm:gap-3 rounded-2xl bg-card shadow-sm ring-border transition duration-300 hover:-translate-y-1 hover:shadow-xl">
       <button
         type="button"
         onClick={() => onVer(producto)}
@@ -26,7 +26,7 @@ function ProductCard({ producto, onVer }) {
           className={`aspect-[3/4] w-full object-cover transition duration-500 group-hover:scale-105 ${agotado ? 'grayscale' : ''}`}
         />
         {producto.en_oferta && (
-          <span className="absolute bottom-3 right-3 flex size-12 items-center justify-center rounded-full bg-primary text-sm font-bold text-primary-foreground shadow-lg ring-2 ring-dorado">
+          <span className="absolute bottom-3 right-3 flex size-10 items-center justify-center rounded-full bg-primary text-xs font-bold sm:size-12 sm:text-sm text-primary-foreground shadow-lg ring-2 ring-dorado">
             -{producto.descuento}%
           </span>
         )}
@@ -36,31 +36,37 @@ function ProductCard({ producto, onVer }) {
           </span>
         )}
       </button>
-      <CardHeader className="gap-1">
+      <CardHeader className="flex-1 gap-1 px-3 sm:flex-none sm:px-4">
         <Badge variant="secondary" className="mb-1 w-fit">{categoria}</Badge>
-        <CardTitle className="font-heading text-lg font-bold leading-snug">
+        <CardTitle className="font-heading text-base font-bold leading-snug sm:text-lg">
           <button type="button" onClick={() => onVer(producto)} className="text-left hover:text-primary">
             {nombre}
           </button>
         </CardTitle>
         {autor && <CardDescription className="italic">{autor}</CardDescription>}
       </CardHeader>
-      <CardContent className="flex-1">
+      <CardContent className="hidden flex-1 sm:block">
         <p className="line-clamp-3 text-sm text-muted-foreground">{descripcion}</p>
       </CardContent>
-      <CardFooter className="items-baseline justify-between border-t bg-transparent">
+      <CardFooter className="flex-wrap items-baseline justify-between gap-x-2 border-t bg-transparent px-3 sm:px-4">
         <Precio producto={producto} />
         {pocasUnidades ? (
           <Badge className="bg-dorado text-foreground">¡Últimas {cantidad}!</Badge>
         ) : (
-          <span className="text-xs text-muted-foreground">
+          <span className={`text-xs text-muted-foreground ${agotado ? '' : 'hidden sm:inline'}`}>
             {agotado ? 'Sin stock' : `${cantidad} disponibles`}
           </span>
         )}
       </CardFooter>
-      <div className="px-4 pb-4">
+      <div className="px-3 pb-3 sm:px-4 sm:pb-4">
         <Button className="w-full" disabled={agotado} onClick={() => agregar(producto)}>
-          <ShoppingCart /> {agotado ? 'Sin stock' : 'Agregar al carrito'}
+          <ShoppingCart />
+          {agotado ? 'Sin stock' : (
+            <>
+              <span className="sm:hidden">Agregar</span>
+              <span className="hidden sm:inline">Agregar al carrito</span>
+            </>
+          )}
         </Button>
       </div>
     </Card>

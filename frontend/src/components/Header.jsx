@@ -2,9 +2,12 @@ import { Search, X } from 'lucide-react'
 
 import BotonCarrito from '@/components/carrito/BotonCarrito'
 import Logo from '@/components/Logo'
+import MenuMovil from '@/components/MenuMovil'
 
 const enlaces = [
   { texto: 'Inicio', href: '#inicio' },
+  { texto: 'Ofertas', href: '#ofertas' },
+  { texto: 'Más vendidos', href: '#mas-vendidos' },
   { texto: 'Catálogo', href: '#catalogo' },
   { texto: 'Nosotros', href: '#nosotros' },
   { texto: 'Contacto', href: '#contacto' },
@@ -22,7 +25,7 @@ function Header({ nombreTienda, busqueda, onBuscar }) {
       <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-x-6 gap-y-3 px-4 py-3">
         <a href="#inicio" className="flex items-center gap-3">
           <Logo />
-          <span className="font-heading text-2xl font-extrabold tracking-tight text-primary">
+          <span className="font-heading text-xl font-extrabold tracking-tight text-primary sm:text-2xl">
             {nombreTienda}
           </span>
         </a>
@@ -53,7 +56,7 @@ function Header({ nombreTienda, busqueda, onBuscar }) {
           )}
         </form>
 
-        <nav className="ml-auto hidden gap-6 text-sm font-medium lg:flex">
+        <nav className="ml-auto hidden gap-5 text-sm font-medium lg:flex">
           {enlaces.map((enlace) => (
             <a
               key={enlace.href}
@@ -64,8 +67,9 @@ function Header({ nombreTienda, busqueda, onBuscar }) {
             </a>
           ))}
         </nav>
-        <div className="ml-auto lg:ml-0">
+        <div className="ml-auto flex items-center gap-2 lg:ml-0">
           <BotonCarrito />
+          <MenuMovil enlaces={enlaces} nombreTienda={nombreTienda} />
         </div>
       </div>
     </header>

@@ -37,14 +37,17 @@ function FilaInventario({ producto, onMovimiento, ocupado }) {
         </div>
       </div>
 
-      <div>
-        <p className="text-xs text-muted-foreground">Stock</p>
-        <p className="font-heading text-2xl font-bold">{producto.cantidad_disponible}</p>
-      </div>
+      {/* En el celular el stock y el estado van uno al lado del otro; en pantallas grandes son columnas */}
+      <div className="grid grid-cols-2 items-center gap-3 lg:contents">
+        <div>
+          <p className="text-xs text-muted-foreground">Stock</p>
+          <p className="font-heading text-2xl font-bold">{producto.cantidad_disponible}</p>
+        </div>
 
-      <div className="space-y-1">
-        <p className="text-xs text-muted-foreground">Mínimo: {producto.stock_minimo}</p>
-        <Badge className={estado.clase}>{estado.texto}</Badge>
+        <div className="space-y-1">
+          <p className="text-xs text-muted-foreground">Mínimo: {producto.stock_minimo}</p>
+          <Badge className={estado.clase}>{estado.texto}</Badge>
+        </div>
       </div>
 
       <div className="flex flex-wrap items-center gap-2">

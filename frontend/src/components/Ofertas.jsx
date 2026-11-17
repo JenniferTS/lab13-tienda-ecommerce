@@ -17,7 +17,7 @@ function Ofertas({ ofertas, cupones, onVer }) {
             {/* En el celular se desliza con el dedo; cada tarjeta se detiene al inicio */}
             <div className="-mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-4">
               {ofertas.map((producto) => (
-                <div key={producto.id} className="w-60 shrink-0 snap-start sm:w-64">
+                <div key={producto.id} className="w-44 shrink-0 snap-start sm:w-64">
                   <ProductCard producto={producto} onVer={onVer} />
                 </div>
               ))}

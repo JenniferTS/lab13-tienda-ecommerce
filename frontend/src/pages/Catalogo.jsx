@@ -89,7 +89,7 @@ function Catalogo({ busqueda, onBuscar, onVer }) {
       <FiltrosCatalogo filtros={filtros} onCambio={cambiarFiltros} onLimpiar={limpiar} hayFiltros={hayFiltros} />
 
       {cargando && (
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        <div className="grid grid-cols-2 gap-3 sm:gap-6 md:grid-cols-3 lg:grid-cols-4">
           {Array.from({ length: 4 }, (_, i) => (
             <Skeleton key={i} className="aspect-[3/4] w-full rounded-2xl" />
           ))}

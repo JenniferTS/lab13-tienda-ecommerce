@@ -8,7 +8,7 @@ function Hero({ destacados, totalProductos, totalCategorias, maximoDescuento = 0
     <section id="inicio" className="relative overflow-hidden bg-vino text-primary-foreground">
       <div className="absolute -right-24 -top-24 size-96 rounded-full bg-dorado/20" />
       <div className="absolute -bottom-32 left-1/3 size-80 rounded-full bg-primary/60" />
-      <div className="relative mx-auto grid max-w-6xl items-center gap-10 px-4 py-14 lg:grid-cols-2 lg:py-20">
+      <div className="relative mx-auto grid max-w-6xl items-center gap-10 px-4 py-10 sm:py-14 lg:grid-cols-2 lg:py-20">
         <div className="space-y-5">
           <p className="text-sm font-semibold uppercase tracking-[0.25em] text-dorado">Arequipa · desde 2026</p>
           <h1 className="text-4xl font-extrabold leading-tight lg:text-5xl">
@@ -46,13 +46,13 @@ function Hero({ destacados, totalProductos, totalCategorias, maximoDescuento = 0
           </div>
         </div>
 
-        <div className="flex h-64 items-center justify-center gap-0 sm:h-80">
+        <div className="flex h-52 items-center justify-center gap-0 sm:h-80">
           {destacados.slice(0, 3).map((producto, i) => (
             <img
               key={producto.id}
               src={producto.imagen}
               alt={`Portada de ${producto.nombre}`}
-              className={`-mx-3 h-48 w-auto rounded-md shadow-2xl ring-1 ring-white/20 sm:h-64 ${inclinaciones[i]}`}
+              className={`-mx-3 h-36 w-auto rounded-md shadow-2xl ring-1 ring-white/20 sm:h-64 ${inclinaciones[i]}`}
             />
           ))}
         </div>
