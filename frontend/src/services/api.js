@@ -78,3 +78,13 @@ export function obtenerConfiguracion() {
 export function validarCupon(codigo, subtotal) {
   return pedir('/cupones/validar/', { metodo: 'POST', cuerpo: { codigo, subtotal } })
 }
+
+// ---- Pedidos
+// `datos`: cliente_nombre, cliente_email, telefono, direccion, cupon e items [{ producto, cantidad }]
+export function crearPedido(datos) {
+  return pedir('/pedidos/', { metodo: 'POST', cuerpo: datos })
+}
+
+export function obtenerPedidos(token) {
+  return pedir('/pedidos/', { token })
+}

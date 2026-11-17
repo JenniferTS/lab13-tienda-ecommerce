@@ -132,3 +132,45 @@ class Cupon(models.Model):
 
     def descuento_sobre(self, subtotal):
         return (subtotal * self.porcentaje / 100).quantize(Decimal('0.01'), rounding=ROUND_HALF_UP)
+
+
+class Pedido(models.Model):
+    """Compra confirmada por un cliente. Los precios quedan guardados tal como se cobraron."""
+
+    PENDIENTE = 'pendiente'
+    ENTREGADO = 'entregado'
+    CANCELADO = 'cancelado'
+    ESTADOS = [(PENDIENTE, 'Pendiente'), (ENTREGADO, 'Entregado'), (CANCELADO, 'Cancelado')]
+
+    cliente_nombre = models.CharField('nombre del cliente', max_length=100)
+    cliente_email = models.EmailField('correo')
+    telefono = models.CharField('teléfono', max_length=20, blank=True)
+    direccion = models.CharField('dirección de entrega', max_length=200, blank=True)
+    cupon_codigo = models.CharField('cupón usado', max_length=20, blank=True)
+    subtotal = models.DecimalField(max_digits=9, decimal_places=2)
+    descuento_cupon = models.DecimalField(max_digits=9, decimal_places=2, default=0)
+    costo_envio = models.DecimalField(max_digits=9, decimal_places=2, default=0)
+    total = models.DecimalField(max_digits=9, decimal_places=2)
+    estado = models.CharField(max_length=10, choices=ESTADOS, default=PENDIENTE)
+    fecha = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-fecha', '-id']
+
+    def __str__(self):
+        return f'Pedido {self.id} de {self.cliente_nombre}'
+
+
+class PedidoItem(models.Model):
+    pedido = models.ForeignKey(Pedido, on_delete=models.CASCADE, related_name='items')
+    producto = models.ForeignKey(Producto, on_delete=models.PROTECT, related_name='ventas')
+    cantidad = models.PositiveIntegerField()
+    # Precio que se cobró por unidad (con el descuento del producto)
+    precio_unitario = models.DecimalField(max_digits=8, decimal_places=2)
+
+    def __str__(self):
+        return f'{self.cantidad} x {self.producto}'
+
+    @property
+    def importe(self):
+        return self.precio_unitario * self.cantidad

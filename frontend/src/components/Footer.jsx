@@ -25,12 +25,14 @@ function Footer({ nombreTienda }) {
           </p>
         </div>
         <div className="space-y-2 text-sm">
-          <h3 className="font-heading text-lg font-bold text-dorado">Próximamente</h3>
-          <p>Carrito de compras, pedidos y pagos en línea.</p>
+          <h3 className="font-heading text-lg font-bold text-dorado">Compra con confianza</h3>
+          <p>Envío gratis desde S/ 100 en Arequipa.</p>
+          <p>Stock real: lo que ves es lo que tenemos.</p>
+          <p>Cupones y ofertas todas las semanas.</p>
         </div>
       </div>
       <div className="border-t border-white/15 py-4 text-center text-xs text-primary-foreground/60">
-        © 2026 {nombreTienda} · Laboratorio 13 de Desarrollo de Aplicaciones Empresariales
+        © 2026 {nombreTienda} · Laboratorio 14 de Desarrollo de Aplicaciones Empresariales
       </div>
     </footer>
   )

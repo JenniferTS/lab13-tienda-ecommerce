@@ -1,9 +1,14 @@
+import { ShoppingCart } from 'lucide-react'
+
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import Precio from '@/components/Precio'
+import { Button } from '@/components/ui/button'
+import { useCarrito } from '@/context/CarritoContext'
 
 // Recibe el producto completo; al hacer clic en la portada o en el título se abre su detalle
 function ProductCard({ producto, onVer }) {
+  const { agregar } = useCarrito()
   const { nombre, autor, descripcion, imagen, categoria_nombre: categoria, cantidad_disponible: cantidad, stock_bajo: pocasUnidades } = producto
   const agotado = cantidad === 0
 
@@ -53,6 +58,11 @@ function ProductCard({ producto, onVer }) {
           </span>
         )}
       </CardFooter>
+      <div className="px-4 pb-4">
+        <Button className="w-full" disabled={agotado} onClick={() => agregar(producto)}>
+          <ShoppingCart /> {agotado ? 'Sin stock' : 'Agregar al carrito'}
+        </Button>
+      </div>
     </Card>
   )
 }

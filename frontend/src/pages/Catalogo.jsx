@@ -5,6 +5,7 @@ import FiltrosCatalogo from '@/components/FiltrosCatalogo'
 import ProductList from '@/components/ProductList'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
+import { useCarrito } from '@/context/CarritoContext'
 import { useDebounce } from '@/hooks/useDebounce'
 import { obtenerCategorias, obtenerProductos } from '@/services/api'
 
@@ -19,6 +20,9 @@ function Catalogo({ busqueda, onBuscar, onVer }) {
   const [error, setError] = useState(null)
   // Al cambiar este número se vuelve a pedir el catálogo (botón "Actualizar")
   const [recarga, setRecarga] = useState(0)
+
+  // Cuando se confirma un pedido cambia el stock, así que se vuelve a pedir el catálogo
+  const { version } = useCarrito()
 
   // La búsqueda se envía cuando el cliente deja de escribir
   const q = useDebounce(busqueda.trim())
@@ -38,7 +42,7 @@ function Catalogo({ busqueda, onBuscar, onVer }) {
     obtenerCategorias()
       .then(setCategorias)
       .catch((e) => setError(e.message))
-  }, [recarga])
+  }, [recarga, version])
 
   // Los productos se piden al entrar y cada vez que cambia la búsqueda o algún filtro
   useEffect(() => {
@@ -59,7 +63,7 @@ function Catalogo({ busqueda, onBuscar, onVer }) {
     return () => {
       vigente = false
     }
-  }, [filtros, q, recarga])
+  }, [filtros, q, recarga, version])
 
   return (
     <section id="catalogo" className="mx-auto max-w-6xl space-y-6 px-4 py-12">

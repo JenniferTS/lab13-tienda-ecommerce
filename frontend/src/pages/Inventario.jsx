@@ -6,8 +6,9 @@ import FilaInventario from '@/components/inventario/FilaInventario'
 import LoginAdmin from '@/components/inventario/LoginAdmin'
 import ResumenInventario from '@/components/inventario/ResumenInventario'
 import { Button } from '@/components/ui/button'
+import { soles } from '@/lib/format'
 import {
-  obtenerInventario, obtenerMovimientos, obtenerResumenInventario, registrarMovimiento,
+  obtenerInventario, obtenerMovimientos, obtenerPedidos, obtenerResumenInventario, registrarMovimiento,
 } from '@/services/api'
 
 const FILTROS = [
@@ -35,12 +36,13 @@ function Inventario() {
   const cargar = useCallback(async () => {
     if (!sesion) return
     try {
-      const [productos, resumen, movimientos] = await Promise.all([
+      const [productos, resumen, movimientos, pedidos] = await Promise.all([
         obtenerInventario(sesion.token),
         obtenerResumenInventario(sesion.token),
         obtenerMovimientos(sesion.token),
+        obtenerPedidos(sesion.token),
       ])
-      setDatos({ productos, resumen, movimientos })
+      setDatos({ productos, resumen, movimientos, pedidos })
       setError(null)
     } catch (e) {
       // Token vencido o inválido: se vuelve a pedir el ingreso
@@ -127,6 +129,41 @@ function Inventario() {
               <FilaInventario key={producto.id} producto={producto} onMovimiento={movimiento} ocupado={ocupado} />
             ))}
             {productos.length === 0 && <p className="py-6 text-center text-muted-foreground">No hay productos en este estado.</p>}
+          </div>
+
+          <div className="space-y-3">
+            <h2 className="text-2xl font-bold text-primary">Pedidos recientes</h2>
+            <div className="overflow-x-auto rounded-2xl border bg-card">
+              <table className="w-full min-w-[640px] text-sm">
+                <thead className="bg-muted text-left text-xs uppercase tracking-wide text-muted-foreground">
+                  <tr>
+                    <th className="p-3">N.º</th>
+                    <th className="p-3">Fecha</th>
+                    <th className="p-3">Cliente</th>
+                    <th className="p-3">Productos</th>
+                    <th className="p-3">Cupón</th>
+                    <th className="p-3 text-right">Total</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {datos.pedidos.slice(0, 10).map((pedido) => (
+                    <tr key={pedido.id} className="border-t">
+                      <td className="p-3 font-semibold">{String(pedido.id).padStart(4, '0')}</td>
+                      <td className="p-3 whitespace-nowrap">{formatoFecha.format(new Date(pedido.fecha))}</td>
+                      <td className="p-3">{pedido.cliente_nombre}</td>
+                      <td className="p-3 text-muted-foreground">
+                        {pedido.items.map((i) => `${i.cantidad} × ${i.producto_nombre}`).join(', ')}
+                      </td>
+                      <td className="p-3">{pedido.cupon_codigo || '—'}</td>
+                      <td className="p-3 text-right font-semibold">{soles(pedido.total)}</td>
+                    </tr>
+                  ))}
+                  {datos.pedidos.length === 0 && (
+                    <tr><td colSpan={6} className="p-6 text-center text-muted-foreground">Todavía no hay pedidos.</td></tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
           </div>
 
           <div className="space-y-3">

@@ -1,5 +1,6 @@
 import { Search, X } from 'lucide-react'
 
+import BotonCarrito from '@/components/carrito/BotonCarrito'
 import Logo from '@/components/Logo'
 
 const enlaces = [
@@ -63,6 +64,9 @@ function Header({ nombreTienda, busqueda, onBuscar }) {
             </a>
           ))}
         </nav>
+        <div className="ml-auto lg:ml-0">
+          <BotonCarrito />
+        </div>
       </div>
     </header>
   )

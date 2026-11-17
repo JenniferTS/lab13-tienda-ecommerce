@@ -1,11 +1,15 @@
 import { useEffect, useState } from 'react'
 
 import BarraPromos from '@/components/BarraPromos'
+import Aviso from '@/components/carrito/Aviso'
+import CarritoSheet from '@/components/carrito/CarritoSheet'
 import Footer from '@/components/Footer'
 import Header from '@/components/Header'
 import Hero from '@/components/Hero'
 import Ofertas from '@/components/Ofertas'
 import ProductDetail from '@/components/ProductDetail'
+import CarritoProvider from '@/context/CarritoProvider'
+import { useCarrito } from '@/context/CarritoContext'
 import Catalogo from '@/pages/Catalogo'
 import Inventario from '@/pages/Inventario'
 import { obtenerCategorias, obtenerConfiguracion, obtenerProductos } from '@/services/api'
@@ -24,8 +28,9 @@ function useVista() {
   return vista
 }
 
-function App() {
+function Tienda() {
   const vista = useVista()
+  const { version } = useCarrito()
   const [busqueda, setBusqueda] = useState('')
   const [productoAbierto, setProductoAbierto] = useState(null)
   // Datos generales para el banner y las ofertas (el catálogo pide los suyos por separado)
@@ -39,7 +44,7 @@ function App() {
         setConfiguracion(config)
       })
       .catch(() => {})
-  }, [])
+  }, [version])
 
   const conStock = resumen.productos.filter((p) => p.cantidad_disponible > 0)
   const ofertas = conStock.filter((p) => p.en_oferta).sort((a, b) => b.descuento - a.descuento)
@@ -69,7 +74,17 @@ function App() {
       </main>
       <Footer nombreTienda={NOMBRE_TIENDA} />
       <ProductDetail producto={productoAbierto} onCerrar={() => setProductoAbierto(null)} />
+      <CarritoSheet configuracion={configuracion} />
+      <Aviso />
     </div>
+  )
+}
+
+function App() {
+  return (
+    <CarritoProvider>
+      <Tienda />
+    </CarritoProvider>
   )
 }
 

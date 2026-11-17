@@ -1,10 +1,27 @@
+import { Minus, Plus, ShoppingCart } from 'lucide-react'
+import { useState } from 'react'
+
 import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import Precio from '@/components/Precio'
+import { useCarrito } from '@/context/CarritoContext'
 import { soles } from '@/lib/format'
 
 // Ventana con el detalle del producto. `producto` es null cuando está cerrada.
 function ProductDetail({ producto, onCerrar }) {
+  const { agregar } = useCarrito()
+  const [cantidad, setCantidad] = useState(1)
+  const [productoAnterior, setProductoAnterior] = useState(producto)
+
+  // Al abrir otro producto la cantidad vuelve a 1
+  if (producto !== productoAnterior) {
+    setProductoAnterior(producto)
+    setCantidad(1)
+  }
+
+  const disponible = producto?.cantidad_disponible ?? 0
+
   return (
     <Dialog open={producto !== null} onOpenChange={(abierto) => !abierto && onCerrar()}>
       <DialogContent className="max-h-[92vh] overflow-y-auto sm:max-w-2xl">
@@ -35,6 +52,40 @@ function ProductDetail({ producto, onCerrar }) {
                   ? 'Sin stock por el momento'
                   : `${producto.cantidad_disponible} unidades disponibles`}
               </p>
+              {disponible > 0 && (
+                <div className="flex flex-wrap items-center gap-3 pt-1">
+                  <div className="flex items-center rounded-full border bg-card">
+                    <button
+                      type="button"
+                      aria-label="Menos unidades"
+                      disabled={cantidad <= 1}
+                      onClick={() => setCantidad((c) => c - 1)}
+                      className="flex size-9 items-center justify-center rounded-full hover:bg-muted disabled:opacity-40"
+                    >
+                      <Minus className="size-4" />
+                    </button>
+                    <span className="w-8 text-center font-semibold">{cantidad}</span>
+                    <button
+                      type="button"
+                      aria-label="Más unidades"
+                      disabled={cantidad >= disponible}
+                      onClick={() => setCantidad((c) => c + 1)}
+                      className="flex size-9 items-center justify-center rounded-full hover:bg-muted disabled:opacity-40"
+                    >
+                      <Plus className="size-4" />
+                    </button>
+                  </div>
+                  <Button
+                    className="flex-1"
+                    onClick={() => {
+                      agregar(producto, cantidad)
+                      onCerrar()
+                    }}
+                  >
+                    <ShoppingCart /> Agregar al carrito
+                  </Button>
+                </div>
+              )}
             </div>
           </div>
         )}

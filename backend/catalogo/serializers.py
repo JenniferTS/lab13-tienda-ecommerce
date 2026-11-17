@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import Categoria, Cupon, MovimientoInventario, Producto
+from .models import Categoria, Cupon, MovimientoInventario, Pedido, PedidoItem, Producto
 
 
 class CategoriaSerializer(serializers.ModelSerializer):
@@ -74,3 +74,38 @@ class CuponSerializer(serializers.ModelSerializer):
     class Meta:
         model = Cupon
         fields = ['codigo', 'porcentaje', 'compra_minima', 'vence']
+
+
+class ItemPedidoEntradaSerializer(serializers.Serializer):
+    producto = serializers.IntegerField()
+    cantidad = serializers.IntegerField(min_value=1, max_value=50)
+
+
+class PedidoEntradaSerializer(serializers.Serializer):
+    """Datos que envía el carrito para confirmar la compra."""
+    cliente_nombre = serializers.CharField(max_length=100)
+    cliente_email = serializers.EmailField()
+    telefono = serializers.CharField(max_length=20, required=False, allow_blank=True)
+    direccion = serializers.CharField(max_length=200, required=False, allow_blank=True)
+    cupon = serializers.CharField(max_length=20, required=False, allow_blank=True)
+    items = ItemPedidoEntradaSerializer(many=True, allow_empty=False)
+
+
+class PedidoItemSerializer(serializers.ModelSerializer):
+    producto_nombre = serializers.CharField(source='producto.nombre', read_only=True)
+    importe = serializers.DecimalField(max_digits=9, decimal_places=2, read_only=True)
+
+    class Meta:
+        model = PedidoItem
+        fields = ['producto', 'producto_nombre', 'cantidad', 'precio_unitario', 'importe']
+
+
+class PedidoSerializer(serializers.ModelSerializer):
+    items = PedidoItemSerializer(many=True, read_only=True)
+    estado_texto = serializers.CharField(source='get_estado_display', read_only=True)
+
+    class Meta:
+        model = Pedido
+        fields = ['id', 'cliente_nombre', 'cliente_email', 'telefono', 'direccion', 'cupon_codigo',
+                  'subtotal', 'descuento_cupon', 'costo_envio', 'total', 'estado', 'estado_texto',
+                  'fecha', 'items']

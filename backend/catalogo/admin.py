@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 from .inventario import registrar_movimiento
-from .models import Categoria, Cupon, MovimientoInventario, Producto
+from .models import Categoria, Cupon, MovimientoInventario, Pedido, PedidoItem, Producto
 
 
 @admin.register(Categoria)
@@ -56,3 +56,23 @@ class MovimientoInventarioAdmin(admin.ModelAdmin):
 
     def has_change_permission(self, request, obj=None):
         return False
+
+
+class PedidoItemInline(admin.TabularInline):
+    model = PedidoItem
+    extra = 0
+    readonly_fields = ('producto', 'cantidad', 'precio_unitario')
+    can_delete = False
+
+    def has_add_permission(self, request, obj=None):
+        return False
+
+
+@admin.register(Pedido)
+class PedidoAdmin(admin.ModelAdmin):
+    list_display = ('id', 'fecha', 'cliente_nombre', 'total', 'cupon_codigo', 'estado')
+    list_filter = ('estado',)
+    list_editable = ('estado',)
+    search_fields = ('cliente_nombre', 'cliente_email')
+    inlines = [PedidoItemInline]
+    readonly_fields = ('subtotal', 'descuento_cupon', 'costo_envio', 'total', 'cupon_codigo', 'fecha')
