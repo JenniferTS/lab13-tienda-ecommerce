@@ -13,7 +13,18 @@ export function obtenerCategorias() {
   return pedir('/categorias/')
 }
 
-// Si se envía el id de una categoría, la API devuelve solo los productos de esa categoría
-export function obtenerProductos(categoriaId = null) {
-  return pedir(categoriaId ? `/productos/?categoria=${categoriaId}` : '/productos/')
+// `filtros` usa los mismos nombres que la API: q, categoria, precio_min, precio_max, disponibles y orden.
+// Los filtros vacíos no se envían.
+export function obtenerProductos(filtros = {}) {
+  const params = new URLSearchParams()
+  for (const [nombre, valor] of Object.entries(filtros)) {
+    if (valor === '' || valor === null || valor === undefined || valor === false) continue
+    params.set(nombre, valor === true ? '1' : valor)
+  }
+  const consulta = params.toString()
+  return pedir(consulta ? `/productos/?${consulta}` : '/productos/')
+}
+
+export function obtenerProducto(id) {
+  return pedir(`/productos/${id}/`)
 }

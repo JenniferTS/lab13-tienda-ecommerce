@@ -10,6 +10,7 @@ const NOMBRE_TIENDA = 'Librería Misti'
 
 function App() {
   // Datos generales para el banner de portada (el catálogo pide los suyos por separado)
+  const [busqueda, setBusqueda] = useState('')
   const [resumen, setResumen] = useState({ productos: [], categorias: 0 })
 
   useEffect(() => {
@@ -23,14 +24,14 @@ function App() {
 
   return (
     <div className="min-h-screen bg-background">
-      <Header nombreTienda={NOMBRE_TIENDA} />
+      <Header nombreTienda={NOMBRE_TIENDA} busqueda={busqueda} onBuscar={setBusqueda} />
       <main>
         <Hero
           destacados={destacados}
           totalProductos={resumen.productos.length}
           totalCategorias={resumen.categorias}
         />
-        <Catalogo />
+        <Catalogo busqueda={busqueda} onBuscar={setBusqueda} />
       </main>
       <Footer nombreTienda={NOMBRE_TIENDA} />
     </div>

@@ -4,9 +4,11 @@ from .models import Categoria, Producto
 
 
 class CategoriaSerializer(serializers.ModelSerializer):
+    total_productos = serializers.IntegerField(read_only=True)
+
     class Meta:
         model = Categoria
-        fields = ['id', 'nombre', 'descripcion']
+        fields = ['id', 'nombre', 'descripcion', 'total_productos']
 
 
 class ProductoSerializer(serializers.ModelSerializer):
