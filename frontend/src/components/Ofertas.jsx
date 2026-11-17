@@ -6,7 +6,7 @@ function Ofertas({ ofertas, cupones, onVer }) {
   if (ofertas.length === 0 && cupones.length === 0) return null
 
   return (
-    <section id="ofertas" className="bg-secondary/60 py-12">
+    <section id="ofertas" className="scroll-mt-20 bg-secondary/60 py-12">
       <div className="mx-auto max-w-6xl space-y-8 px-4">
         {ofertas.length > 0 && (
           <div className="space-y-5">

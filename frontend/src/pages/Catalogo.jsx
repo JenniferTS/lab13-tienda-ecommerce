@@ -66,7 +66,7 @@ function Catalogo({ busqueda, onBuscar, onVer }) {
   }, [filtros, q, recarga, version])
 
   return (
-    <section id="catalogo" className="mx-auto max-w-6xl space-y-6 px-4 py-12">
+    <section id="catalogo" className="scroll-mt-28 mx-auto max-w-6xl space-y-6 px-4 py-12">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
           <h2 className="text-3xl font-extrabold text-primary">Catálogo</h2>

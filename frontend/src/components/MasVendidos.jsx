@@ -16,7 +16,7 @@ function MasVendidos({ onVer }) {
   if (productos.length === 0) return null
 
   return (
-    <section id="mas-vendidos" className="mx-auto max-w-6xl space-y-5 px-4 py-12">
+    <section id="mas-vendidos" className="scroll-mt-20 mx-auto max-w-6xl space-y-5 px-4 py-12">
       <div>
         <p className="text-sm font-semibold uppercase tracking-[0.25em] text-primary/70">Lo que más se lleva</p>
         <h2 className="text-3xl font-extrabold text-primary">Los más vendidos</h2>

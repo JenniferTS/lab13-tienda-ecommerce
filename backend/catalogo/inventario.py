@@ -17,8 +17,10 @@ def registrar_movimiento(producto_id, cantidad, tipo, motivo='', usuario=''):
     producto = Producto.objects.select_for_update().get(pk=producto_id)
     nuevo_stock = producto.cantidad_disponible + cantidad
     if nuevo_stock < 0:
+        hay = producto.cantidad_disponible
         raise StockInsuficiente(
-            f'«{producto.nombre}»: hay {producto.cantidad_disponible} unidades y se piden {-cantidad}.'
+            f'«{producto.nombre}»: solo {"queda 1 unidad" if hay == 1 else f"quedan {hay} unidades"} '
+            f'y pediste {-cantidad}.'
         )
     producto.cantidad_disponible = nuevo_stock
     producto.save(update_fields=['cantidad_disponible'])
