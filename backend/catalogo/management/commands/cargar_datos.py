@@ -1,6 +1,8 @@
 from django.core.management.base import BaseCommand
 
-from catalogo.models import Categoria, MovimientoInventario, Producto
+from datetime import date
+
+from catalogo.models import Categoria, Cupon, MovimientoInventario, Producto
 
 # Datos de ejemplo de Librería Misti. Las portadas ya están en media/portadas/
 CATEGORIAS = [
@@ -81,6 +83,24 @@ STOCK_MINIMO = {'Útiles': 5}
 STOCK_MINIMO_POR_DEFECTO = 3
 
 
+# Productos en promoción: nombre -> porcentaje de descuento
+DESCUENTOS = {
+    'Cien años de soledad': 15,
+    'El Principito': 20,
+    'Trilce': 10,
+    'Cálculo diferencial e integral': 10,
+    'Cuaderno cuadriculado A4 de 100 hojas': 15,
+    'Resaltadores pastel (set de 6)': 25,
+}
+
+# (código, porcentaje, compra mínima, válido hasta, activo)
+CUPONES = [
+    ('MISTI10', 10, 0, None, True),
+    ('LECTOR15', 15, 80, date(2026, 12, 31), True),
+    ('VERANO20', 20, 0, date(2026, 3, 1), True),  # vencido: sirve para probar el mensaje de error
+]
+
+
 class Command(BaseCommand):
     help = 'Carga las categorías y los productos de ejemplo de la librería'
 
@@ -97,6 +117,7 @@ class Command(BaseCommand):
                     'descripcion': descripcion,
                     'precio': precio,
                     'imagen': imagen,
+                    'descuento': DESCUENTOS.get(nombre, 0),
                     'stock_minimo': STOCK_MINIMO.get(categoria, STOCK_MINIMO_POR_DEFECTO),
                     'categoria': Categoria.objects.get(nombre=categoria),
                 },
@@ -105,6 +126,7 @@ class Command(BaseCommand):
                     'descripcion': descripcion,
                     'precio': precio,
                     'cantidad_disponible': cantidad,
+                    'descuento': DESCUENTOS.get(nombre, 0),
                     'imagen': imagen,
                     'stock_minimo': STOCK_MINIMO.get(categoria, STOCK_MINIMO_POR_DEFECTO),
                     'categoria': Categoria.objects.get(nombre=categoria),
@@ -116,5 +138,8 @@ class Command(BaseCommand):
                     cantidad=producto.cantidad_disponible,
                     stock_resultante=producto.cantidad_disponible, motivo='Stock inicial',
                 )
+        for codigo, porcentaje, minimo, vence, activo in CUPONES:
+            Cupon.objects.update_or_create(codigo=codigo, defaults={
+                'porcentaje': porcentaje, 'compra_minima': minimo, 'vence': vence, 'activo': activo})
         self.stdout.write(self.style.SUCCESS(
             f'{Categoria.objects.count()} categorías y {Producto.objects.count()} productos cargados'))

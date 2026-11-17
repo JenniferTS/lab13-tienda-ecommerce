@@ -1,10 +1,10 @@
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
-import { soles } from '@/lib/format'
+import Precio from '@/components/Precio'
 
 // Recibe el producto completo; al hacer clic en la portada o en el título se abre su detalle
 function ProductCard({ producto, onVer }) {
-  const { nombre, autor, descripcion, precio, imagen, categoria_nombre: categoria, cantidad_disponible: cantidad, stock_bajo: pocasUnidades } = producto
+  const { nombre, autor, descripcion, imagen, categoria_nombre: categoria, cantidad_disponible: cantidad, stock_bajo: pocasUnidades } = producto
   const agotado = cantidad === 0
 
   return (
@@ -20,6 +20,11 @@ function ProductCard({ producto, onVer }) {
           alt={`Portada de ${nombre}`}
           className={`aspect-[3/4] w-full object-cover transition duration-500 group-hover:scale-105 ${agotado ? 'grayscale' : ''}`}
         />
+        {producto.en_oferta && (
+          <span className="absolute bottom-3 right-3 flex size-12 items-center justify-center rounded-full bg-primary text-sm font-bold text-primary-foreground shadow-lg ring-2 ring-dorado">
+            -{producto.descuento}%
+          </span>
+        )}
         {agotado && (
           <span className="absolute inset-x-0 top-1/2 -translate-y-1/2 bg-foreground/85 py-2 text-center text-sm font-semibold tracking-[0.3em] text-background">
             AGOTADO
@@ -39,7 +44,7 @@ function ProductCard({ producto, onVer }) {
         <p className="line-clamp-3 text-sm text-muted-foreground">{descripcion}</p>
       </CardContent>
       <CardFooter className="items-baseline justify-between border-t bg-transparent">
-        <span className="font-heading text-xl font-bold text-primary">{soles(precio)}</span>
+        <Precio producto={producto} />
         {pocasUnidades ? (
           <Badge className="bg-dorado text-foreground">¡Últimas {cantidad}!</Badge>
         ) : (

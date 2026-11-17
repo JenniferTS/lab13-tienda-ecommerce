@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import Categoria, MovimientoInventario, Producto
+from .models import Categoria, Cupon, MovimientoInventario, Producto
 
 
 class CategoriaSerializer(serializers.ModelSerializer):
@@ -15,12 +15,14 @@ class ProductoSerializer(serializers.ModelSerializer):
     # Se devuelve el nombre de la categoría además de su id para no hacer otra consulta
     categoria_nombre = serializers.CharField(source='categoria.nombre', read_only=True)
     stock_bajo = serializers.BooleanField(read_only=True)
+    en_oferta = serializers.BooleanField(read_only=True)
+    precio_final = serializers.DecimalField(max_digits=8, decimal_places=2, read_only=True)
 
     class Meta:
         model = Producto
         fields = [
-            'id', 'nombre', 'autor', 'descripcion', 'precio', 'imagen',
-            'cantidad_disponible', 'stock_bajo', 'categoria', 'categoria_nombre',
+            'id', 'nombre', 'autor', 'descripcion', 'precio', 'descuento', 'precio_final', 'en_oferta',
+            'imagen', 'cantidad_disponible', 'stock_bajo', 'categoria', 'categoria_nombre',
         ]
 
 
@@ -66,3 +68,9 @@ class NuevoMovimientoSerializer(serializers.Serializer):
         if datos['tipo'] == MovimientoInventario.AJUSTE and not datos.get('motivo', '').strip():
             raise serializers.ValidationError({'motivo': 'Indica el motivo del ajuste.'})
         return datos
+
+
+class CuponSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Cupon
+        fields = ['codigo', 'porcentaje', 'compra_minima', 'vence']

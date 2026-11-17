@@ -1,5 +1,6 @@
 import { Badge } from '@/components/ui/badge'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import Precio from '@/components/Precio'
 import { soles } from '@/lib/format'
 
 // Ventana con el detalle del producto. `producto` es null cuando está cerrada.
@@ -21,7 +22,14 @@ function ProductDetail({ producto, onCerrar }) {
                 <DialogDescription className="italic">{producto.autor}</DialogDescription>
               </DialogHeader>
               <p className="text-sm leading-relaxed text-foreground/85">{producto.descripcion}</p>
-              <p className="font-heading text-3xl font-bold text-primary">{soles(producto.precio)}</p>
+              <div className="space-y-1">
+                <Precio producto={producto} className="text-3xl" />
+                {producto.en_oferta && (
+                  <Badge className="bg-dorado text-foreground">
+                    -{producto.descuento}% · ahorras {soles(producto.precio - producto.precio_final)}
+                  </Badge>
+                )}
+              </div>
               <p className="text-sm text-muted-foreground">
                 {producto.cantidad_disponible === 0
                   ? 'Sin stock por el momento'

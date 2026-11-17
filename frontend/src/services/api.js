@@ -67,3 +67,14 @@ export function registrarMovimiento(token, productoId, { tipo, cantidad, motivo 
 export function cambiarStockMinimo(token, productoId, stockMinimo) {
   return pedir(`/inventario/${productoId}/`, { metodo: 'PATCH', token, cuerpo: { stock_minimo: stockMinimo } })
 }
+
+// ---- Promociones
+// Condiciones de envío y cupones vigentes
+export function obtenerConfiguracion() {
+  return pedir('/configuracion/')
+}
+
+// Comprueba un cupón con el subtotal del carrito. Si no sirve, lanza un error con el motivo.
+export function validarCupon(codigo, subtotal) {
+  return pedir('/cupones/validar/', { metodo: 'POST', cuerpo: { codigo, subtotal } })
+}

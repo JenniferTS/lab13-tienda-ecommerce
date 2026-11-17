@@ -28,8 +28,9 @@ def _coincide(producto, palabras):
 # Cada orden indica la clave de ordenamiento y si es descendente
 ORDENES = {
     'nombre': (lambda p: normalizar(p.nombre), False),
-    'precio_asc': (lambda p: p.precio, False),
-    'precio_desc': (lambda p: p.precio, True),
+    'precio_asc': (lambda p: p.precio_final, False),
+    'precio_desc': (lambda p: p.precio_final, True),
+    'descuento': (lambda p: p.descuento, True),
     'novedades': (lambda p: p.id, True),
 }
 
@@ -42,13 +43,18 @@ def filtrar_productos(productos, params):
     precio_min   precio mínimo
     precio_max   precio máximo
     disponibles  1 = solo los que tienen stock
-    orden        nombre | precio_asc | precio_desc | novedades
+    en_oferta    1 = solo los que tienen descuento
+    orden        nombre | precio_asc | precio_desc | descuento | novedades
+
+    Los precios se comparan con el precio final (ya con el descuento).
     """
     categoria = params.get('categoria')
     if categoria:
         productos = productos.filter(categoria_id=categoria)
     if params.get('disponibles') == '1':
         productos = productos.filter(cantidad_disponible__gt=0)
+    if params.get('en_oferta') == '1':
+        productos = productos.filter(descuento__gt=0)
 
     resultado = list(productos)
 
@@ -60,9 +66,9 @@ def filtrar_productos(productos, params):
 
     minimo, maximo = _decimal(params.get('precio_min')), _decimal(params.get('precio_max'))
     if minimo is not None:
-        resultado = [p for p in resultado if p.precio >= minimo]
+        resultado = [p for p in resultado if p.precio_final >= minimo]
     if maximo is not None:
-        resultado = [p for p in resultado if p.precio <= maximo]
+        resultado = [p for p in resultado if p.precio_final <= maximo]
 
     clave, descendente = ORDENES.get(params.get('orden'), ORDENES['nombre'])
     return sorted(resultado, key=clave, reverse=descendente)

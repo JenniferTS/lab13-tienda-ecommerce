@@ -2,21 +2,19 @@ import { useEffect, useMemo, useState } from 'react'
 
 import CategoryFilter from '@/components/CategoryFilter'
 import FiltrosCatalogo from '@/components/FiltrosCatalogo'
-import ProductDetail from '@/components/ProductDetail'
 import ProductList from '@/components/ProductList'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useDebounce } from '@/hooks/useDebounce'
 import { obtenerCategorias, obtenerProductos } from '@/services/api'
 
-const FILTROS_INICIALES = { categoria: null, orden: 'nombre', precio_min: '', precio_max: '', disponibles: false }
+const FILTROS_INICIALES = { categoria: null, orden: 'nombre', precio_min: '', precio_max: '', disponibles: false, en_oferta: false }
 
 // `busqueda` es el texto del buscador del encabezado
-function Catalogo({ busqueda, onBuscar }) {
+function Catalogo({ busqueda, onBuscar, onVer }) {
   const [categorias, setCategorias] = useState([])
   const [productos, setProductos] = useState([])
   const [filtros, setFiltros] = useState(FILTROS_INICIALES)
-  const [productoAbierto, setProductoAbierto] = useState(null)
   const [cargando, setCargando] = useState(true)
   const [error, setError] = useState(null)
   // Al cambiar este número se vuelve a pedir el catálogo (botón "Actualizar")
@@ -101,10 +99,9 @@ function Catalogo({ busqueda, onBuscar }) {
       )}
 
       {!cargando && !error && (
-        <ProductList productos={productos} onVer={setProductoAbierto} hayFiltros={hayFiltros} onLimpiar={limpiar} />
+        <ProductList productos={productos} onVer={onVer} hayFiltros={hayFiltros} onLimpiar={limpiar} />
       )}
 
-      <ProductDetail producto={productoAbierto} onCerrar={() => setProductoAbierto(null)} />
     </section>
   )
 }

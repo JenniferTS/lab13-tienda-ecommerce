@@ -1,11 +1,14 @@
 import { useEffect, useState } from 'react'
 
+import BarraPromos from '@/components/BarraPromos'
 import Footer from '@/components/Footer'
 import Header from '@/components/Header'
 import Hero from '@/components/Hero'
+import Ofertas from '@/components/Ofertas'
+import ProductDetail from '@/components/ProductDetail'
 import Catalogo from '@/pages/Catalogo'
 import Inventario from '@/pages/Inventario'
-import { obtenerCategorias, obtenerProductos } from '@/services/api'
+import { obtenerCategorias, obtenerConfiguracion, obtenerProductos } from '@/services/api'
 
 const NOMBRE_TIENDA = 'Librería Misti'
 
@@ -23,21 +26,30 @@ function useVista() {
 
 function App() {
   const vista = useVista()
-  // Datos generales para el banner de portada (el catálogo pide los suyos por separado)
   const [busqueda, setBusqueda] = useState('')
+  const [productoAbierto, setProductoAbierto] = useState(null)
+  // Datos generales para el banner y las ofertas (el catálogo pide los suyos por separado)
   const [resumen, setResumen] = useState({ productos: [], categorias: 0 })
+  const [configuracion, setConfiguracion] = useState(null)
 
   useEffect(() => {
-    Promise.all([obtenerProductos(), obtenerCategorias()])
-      .then(([productos, categorias]) => setResumen({ productos, categorias: categorias.length }))
+    Promise.all([obtenerProductos(), obtenerCategorias(), obtenerConfiguracion()])
+      .then(([productos, categorias, config]) => {
+        setResumen({ productos, categorias: categorias.length })
+        setConfiguracion(config)
+      })
       .catch(() => {})
   }, [])
 
-  // Para el banner se prefieren los productos con stock
-  const destacados = resumen.productos.filter((p) => p.cantidad_disponible > 0).slice(0, 3)
+  const conStock = resumen.productos.filter((p) => p.cantidad_disponible > 0)
+  const ofertas = conStock.filter((p) => p.en_oferta).sort((a, b) => b.descuento - a.descuento)
+  // Para el banner se prefieren las ofertas con stock
+  const destacados = [...ofertas, ...conStock.filter((p) => !p.en_oferta)].slice(0, 3)
+  const maximoDescuento = Math.max(0, ...ofertas.map((p) => p.descuento))
 
   return (
     <div className="min-h-screen bg-background">
+      <BarraPromos configuracion={configuracion} />
       <Header nombreTienda={NOMBRE_TIENDA} busqueda={busqueda} onBuscar={setBusqueda} />
       <main>
         {vista === 'inventario' ? (
@@ -48,12 +60,15 @@ function App() {
               destacados={destacados}
               totalProductos={resumen.productos.length}
               totalCategorias={resumen.categorias}
+              maximoDescuento={maximoDescuento}
             />
-            <Catalogo busqueda={busqueda} onBuscar={setBusqueda} />
+            <Ofertas ofertas={ofertas} cupones={configuracion?.cupones ?? []} onVer={setProductoAbierto} />
+            <Catalogo busqueda={busqueda} onBuscar={setBusqueda} onVer={setProductoAbierto} />
           </>
         )}
       </main>
       <Footer nombreTienda={NOMBRE_TIENDA} />
+      <ProductDetail producto={productoAbierto} onCerrar={() => setProductoAbierto(null)} />
     </div>
   )
 }

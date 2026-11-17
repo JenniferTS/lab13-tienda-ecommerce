@@ -1,7 +1,7 @@
 import { Button } from '@/components/ui/button'
 
 // Banner de portada. Muestra tres portadas del catálogo (las que llegan desde la API)
-function Hero({ destacados, totalProductos, totalCategorias }) {
+function Hero({ destacados, totalProductos, totalCategorias, maximoDescuento = 0 }) {
   const inclinaciones = ['-rotate-6 translate-y-4', 'z-10 scale-110', 'rotate-6 translate-y-4']
 
   return (
@@ -16,7 +16,7 @@ function Hero({ destacados, totalProductos, totalCategorias }) {
           </h1>
           <p className="max-w-md text-lg text-primary-foreground/85">
             Novelas, poesía, cuentos infantiles, libros de estudio y útiles para el cuaderno.
-            Tu librería de barrio, ahora también en línea.
+            Tu librería de barrio, ahora también en línea{maximoDescuento > 0 && `, con hasta ${maximoDescuento}% de descuento`}.
           </p>
           <div className="flex flex-wrap items-center gap-4 pt-2">
             <Button
@@ -27,6 +27,17 @@ function Hero({ destacados, totalProductos, totalCategorias }) {
             >
               Ver catálogo
             </Button>
+            {maximoDescuento > 0 && (
+              <Button
+                size="lg"
+                variant="outline"
+                className="border-primary-foreground/40 bg-transparent text-primary-foreground hover:bg-white/10 hover:text-primary-foreground"
+                render={<a href="#ofertas" />}
+                nativeButton={false}
+              >
+                Ver ofertas
+              </Button>
+            )}
             {totalProductos > 0 && (
               <span className="text-sm text-primary-foreground/75">
                 {totalProductos} títulos · {totalCategorias} categorías

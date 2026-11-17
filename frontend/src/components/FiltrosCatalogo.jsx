@@ -9,6 +9,7 @@ const ORDENES = [
   { valor: 'nombre', texto: 'Nombre (A-Z)' },
   { valor: 'precio_asc', texto: 'Precio: menor a mayor' },
   { valor: 'precio_desc', texto: 'Precio: mayor a menor' },
+  { valor: 'descuento', texto: 'Mayor descuento' },
   { valor: 'novedades', texto: 'Más recientes' },
 ]
 
@@ -28,7 +29,7 @@ function FiltrosCatalogo({ filtros, onCambio, onLimpiar, hayFiltros }) {
       </Button>
 
       <div
-        className={`${abierto ? 'grid' : 'hidden'} items-end gap-4 rounded-2xl border bg-card p-4 sm:grid-cols-2 md:grid md:grid-cols-[1.2fr_1fr_auto_auto]`}
+        className={`${abierto ? 'grid' : 'hidden'} items-end gap-4 rounded-2xl border bg-card p-4 sm:grid-cols-2 md:grid md:grid-cols-[1.2fr_1fr_auto_auto_auto]`}
       >
         <label className="block space-y-1.5">
           <span className="block text-sm font-medium">Ordenar por</span>
@@ -73,6 +74,11 @@ function FiltrosCatalogo({ filtros, onCambio, onLimpiar, hayFiltros }) {
         <label className="flex items-center gap-2 pb-1.5 text-sm font-medium">
           <Switch checked={filtros.disponibles} onCheckedChange={(v) => onCambio({ disponibles: v })} />
           Solo disponibles
+        </label>
+
+        <label className="flex items-center gap-2 pb-1.5 text-sm font-medium">
+          <Switch checked={filtros.en_oferta} onCheckedChange={(v) => onCambio({ en_oferta: v })} />
+          Solo ofertas
         </label>
 
         <Button variant="ghost" className="text-primary" onClick={onLimpiar} disabled={!hayFiltros}>

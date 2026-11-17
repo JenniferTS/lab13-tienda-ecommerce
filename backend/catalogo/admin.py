@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 from .inventario import registrar_movimiento
-from .models import Categoria, MovimientoInventario, Producto
+from .models import Categoria, Cupon, MovimientoInventario, Producto
 
 
 @admin.register(Categoria)
@@ -12,10 +12,11 @@ class CategoriaAdmin(admin.ModelAdmin):
 
 @admin.register(Producto)
 class ProductoAdmin(admin.ModelAdmin):
-    list_display = ('nombre', 'autor', 'categoria', 'precio', 'cantidad_disponible', 'stock_minimo', 'estado')
-    list_filter = ('categoria',)
+    list_display = ('nombre', 'autor', 'categoria', 'precio', 'descuento', 'cantidad_disponible', 'stock_minimo', 'estado')
+    list_editable = ('descuento',)
+    list_filter = ('categoria', 'descuento')
     search_fields = ('nombre', 'autor')
-    actions = ['reponer_10']
+    actions = ['reponer_10', 'quitar_descuento']
     # El stock no se edita a mano: se cambia con movimientos para que quede registrado
     readonly_fields = ('cantidad_disponible',)
 
@@ -29,6 +30,17 @@ class ProductoAdmin(admin.ModelAdmin):
             registrar_movimiento(producto.id, 10, MovimientoInventario.ENTRADA,
                                  'Reposición desde el administrador', request.user.get_username())
         self.message_user(request, f'Se repusieron 10 unidades a {queryset.count()} productos.')
+
+
+    @admin.action(description='Quitar el descuento a los productos seleccionados')
+    def quitar_descuento(self, request, queryset):
+        queryset.update(descuento=0)
+
+
+@admin.register(Cupon)
+class CuponAdmin(admin.ModelAdmin):
+    list_display = ('codigo', 'porcentaje', 'compra_minima', 'vence', 'activo')
+    list_filter = ('activo',)
 
 
 @admin.register(MovimientoInventario)
