@@ -18,6 +18,11 @@ function Footer({ nombreTienda }) {
           <h3 className="font-heading text-lg font-bold text-dorado">Contacto</h3>
           <p>Arequipa, Perú</p>
           <p>Lunes a sábado de 9:00 a 20:00</p>
+          <p>
+            <a href="#/inventario" className="text-dorado underline-offset-4 hover:underline">
+              Panel de inventario (personal)
+            </a>
+          </p>
         </div>
         <div className="space-y-2 text-sm">
           <h3 className="font-heading text-lg font-bold text-dorado">Próximamente</h3>

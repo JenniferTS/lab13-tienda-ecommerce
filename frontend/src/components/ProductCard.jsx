@@ -4,9 +4,8 @@ import { soles } from '@/lib/format'
 
 // Recibe el producto completo; al hacer clic en la portada o en el título se abre su detalle
 function ProductCard({ producto, onVer }) {
-  const { nombre, autor, descripcion, precio, imagen, categoria_nombre: categoria, cantidad_disponible: cantidad } = producto
+  const { nombre, autor, descripcion, precio, imagen, categoria_nombre: categoria, cantidad_disponible: cantidad, stock_bajo: pocasUnidades } = producto
   const agotado = cantidad === 0
-  const pocasUnidades = cantidad > 0 && cantidad <= 3
 
   return (
     <Card className="group h-full gap-3 pt-0 rounded-2xl bg-card shadow-sm ring-border transition duration-300 hover:-translate-y-1 hover:shadow-xl">

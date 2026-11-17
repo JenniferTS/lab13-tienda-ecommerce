@@ -1,9 +1,12 @@
+from django.urls import path
 from rest_framework.routers import DefaultRouter
 
 from .views import CategoriaViewSet, ProductoViewSet
+from .views_inventario import InventarioViewSet, LoginView
 
 router = DefaultRouter()
 router.register('categorias', CategoriaViewSet)
 router.register('productos', ProductoViewSet, basename='producto')
+router.register('inventario', InventarioViewSet, basename='inventario')
 
-urlpatterns = router.urls
+urlpatterns = [path('auth/login/', LoginView.as_view())] + router.urls

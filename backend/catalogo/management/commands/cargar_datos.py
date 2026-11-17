@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand
 
-from catalogo.models import Categoria, Producto
+from catalogo.models import Categoria, MovimientoInventario, Producto
 
 # Datos de ejemplo de Librería Misti. Las portadas ya están en media/portadas/
 CATEGORIAS = [
@@ -76,6 +76,11 @@ PRODUCTOS = [
 ]
 
 
+# Cuando el stock baja de este número se avisa que hay que reponer (los útiles se venden más rápido)
+STOCK_MINIMO = {'Útiles': 5}
+STOCK_MINIMO_POR_DEFECTO = 3
+
+
 class Command(BaseCommand):
     help = 'Carga las categorías y los productos de ejemplo de la librería'
 
@@ -84,16 +89,32 @@ class Command(BaseCommand):
             Categoria.objects.get_or_create(nombre=nombre, defaults={'descripcion': descripcion})
 
         for nombre, autor, categoria, precio, cantidad, descripcion, imagen in PRODUCTOS:
-            Producto.objects.update_or_create(
+            # El stock solo se fija al crear el producto: después cambia con los movimientos de inventario
+            producto, _ = Producto.objects.update_or_create(
                 nombre=nombre,
                 defaults={
                     'autor': autor,
                     'descripcion': descripcion,
                     'precio': precio,
+                    'imagen': imagen,
+                    'stock_minimo': STOCK_MINIMO.get(categoria, STOCK_MINIMO_POR_DEFECTO),
+                    'categoria': Categoria.objects.get(nombre=categoria),
+                },
+                create_defaults={
+                    'autor': autor,
+                    'descripcion': descripcion,
+                    'precio': precio,
                     'cantidad_disponible': cantidad,
                     'imagen': imagen,
+                    'stock_minimo': STOCK_MINIMO.get(categoria, STOCK_MINIMO_POR_DEFECTO),
                     'categoria': Categoria.objects.get(nombre=categoria),
                 },
             )
+            if not producto.movimientos.exists():
+                MovimientoInventario.objects.create(
+                    producto=producto, tipo=MovimientoInventario.ENTRADA,
+                    cantidad=producto.cantidad_disponible,
+                    stock_resultante=producto.cantidad_disponible, motivo='Stock inicial',
+                )
         self.stdout.write(self.style.SUCCESS(
             f'{Categoria.objects.count()} categorías y {Producto.objects.count()} productos cargados'))
